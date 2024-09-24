@@ -1,12 +1,11 @@
+-- postgresql data model
 CREATE TABLE status (id SERIAL PRIMARY KEY, status VARCHAR);
 
 CREATE TABLE repo (
   id SERIAL PRIMARY KEY,
   name VARCHAR,
   url VARCHAR,
-  status_id INTEGER REFERENCES status(id) ON DELETE
-  SET
-    NULL
+  status_id INTEGER REFERENCES status(id)
 );
 
 CREATE TABLE comment (
