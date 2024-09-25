@@ -8,5 +8,8 @@ export const getRepos = (_: Request, res: Response) => {
 
 export const getRepo = (req: Request, res: Response) => {
   const repo: Repo = repos.find((repo) => repo.id === req.params.id) as Repo;
+  if (!repo) {
+    res.status(404).json({ message: "Repo not found" });
+  }
   res.status(200).json(repo);
 };
