@@ -27,5 +27,10 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": ["./src/**/*.ts", "src/database/seed.js", "src/database/scrap.js"]
+  "include": [
+    "./src/**/*.ts",
+    "src/database/seed.js",
+    "src/database/scrap.js",
+    "src/index.js"
+  ]
 }
