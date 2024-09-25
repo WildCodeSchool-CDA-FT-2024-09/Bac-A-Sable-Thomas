@@ -1,4 +1,4 @@
-import fs from "fs";
+import { promises as fs } from "fs";
 
 // Server side types
 const sampleRawRepo = {
@@ -50,7 +50,7 @@ type RepoLanguage = {
 
 async function parseRepos() {
   const raw: RepoResponse = await JSON.parse(
-    fs.readFileSync("./data/raw.json", { encoding: "utf-8" })
+    await fs.readFile("./data/raw.json", { encoding: "utf-8" })
   );
   return raw;
 }
@@ -109,10 +109,10 @@ async function transformRepos() {
   });
 
   // write to files
-  fs.writeFileSync("./data/repos.json", JSON.stringify(repos, null, 2));
-  fs.writeFileSync("./data/languages.json", JSON.stringify(languages, null, 2));
-  fs.writeFileSync("./data/statuses.json", JSON.stringify(statuses, null, 2));
-  fs.writeFileSync(
+  fs.writeFile("./data/repos.json", JSON.stringify(repos, null, 2));
+  fs.writeFile("./data/languages.json", JSON.stringify(languages, null, 2));
+  fs.writeFile("./data/statuses.json", JSON.stringify(statuses, null, 2));
+  fs.writeFile(
     "./data/repo_languages.json",
     JSON.stringify(repoLanguages, null, 2)
   );
