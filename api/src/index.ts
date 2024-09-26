@@ -2,8 +2,12 @@
 import express from "express";
 import router from "./router";
 
+// TODO - env
+
 const app = express();
 
+// Express doesn't parse JSON by default
+app.use(express.json());
 app.use("/api", router);
 
 app.listen(3000, async () => {
