@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "CDA-Bac-A-Sable",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

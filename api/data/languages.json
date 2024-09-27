@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "label": "JavaScript"
+  },
+  {
+    "id": 2,
+    "label": "Astro"
+  },
+  {
+    "id": 3,
+    "label": "CSS"
+  },
+  {
+    "id": 4,
+    "label": "TypeScript"
+  },
+  {
+    "id": 5,
+    "label": "GDScript"
+  },
+  {
+    "id": 6,
+    "label": "Shell"
+  },
+  {
+    "id": 7,
+    "label": "HTML"
+  },
+  {
+    "id": 8,
+    "label": "Dockerfile"
+  },
+  {
+    "id": 9,
+    "label": "PHP"
+  },
+  {
+    "id": 10,
+    "label": "Blade"
+  },
+  {
+    "id": 11,
+    "label": "Vue"
+  },
+  {
+    "id": 12,
+    "label": "SCSS"
+  }
+]

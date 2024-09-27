@@ -1,0 +1,20 @@
+meta {
+  name: updateRepo
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/api/repos/R_kgDOMJ1wPQ
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "R_kgDOMJ1wPQ",
+    "name": "astro-p5js",
+    "url": "https://github.com/teasmade/astro-p5js",
+    "isPrivate": 1
+  }
+}
