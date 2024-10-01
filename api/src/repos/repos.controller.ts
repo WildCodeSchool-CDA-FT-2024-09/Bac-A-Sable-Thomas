@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Repo } from "./repos.entity";
-// import { Status } from "../statuses/statuses.entity";
 import { validate } from "class-validator";
 import { QueryFailedError } from "typeorm";
 
@@ -12,7 +11,7 @@ export const getRepos = async (req: Request, res: Response) => {
       try {
         const repos = await Repo.find({
           order: { [orderBy]: "ASC" },
-          relations: { status: true },
+          relations: { status: true, languages: true },
         });
         res.status(200).json(repos);
       } catch (err) {
@@ -23,7 +22,7 @@ export const getRepos = async (req: Request, res: Response) => {
 
   try {
     const repos = await Repo.find({
-      relations: { status: true },
+      relations: { status: true, languages: true },
     });
     res.status(200).json(repos);
   } catch (err) {
@@ -52,8 +51,9 @@ export const addRepo = async (req: Request, res: Response) => {
     }
     // Attempt to save entity - have to use explicit insert as .save() in TypeORM does an upsert.
     // This is somewhat particular to the demo case with a non-autoincrementing primary key.
-    await Repo.insert(repo);
-    res.status(201).json(repo);
+    // await Repo.insert(repo);
+    const savedRepo = await repo.save();
+    res.status(201).json(savedRepo);
   } catch (err) {
     if (err instanceof QueryFailedError) {
       // Db constraint errors will show here
