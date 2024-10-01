@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Repo } from "./repos.entity";
+// import { Status } from "../statuses/statuses.entity";
 import { validate } from "class-validator";
 import { QueryFailedError } from "typeorm";
 
@@ -11,6 +12,7 @@ export const getRepos = async (req: Request, res: Response) => {
       try {
         const repos = await Repo.find({
           order: { [orderBy]: "ASC" },
+          relations: { status: true },
         });
         res.status(200).json(repos);
       } catch (err) {
@@ -20,7 +22,9 @@ export const getRepos = async (req: Request, res: Response) => {
   }
 
   try {
-    const repos = await Repo.find();
+    const repos = await Repo.find({
+      relations: { status: true },
+    });
     res.status(200).json(repos);
   } catch (err) {
     res.status(500).json({ message: err.message });
