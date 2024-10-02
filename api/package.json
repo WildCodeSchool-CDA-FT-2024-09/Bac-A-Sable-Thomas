@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fetch": "gh repo list teasmade --json id,name,url,isPrivate,languages >> ./data/raw.json",
+    "fetch": "gh repo list teasmade --json id,name,url,isPrivate,languages > ./data/raw.json",
     "test-ts": "ts-node-dev ./data/test.ts",
     "create": "ts-node-dev ./data/create.ts",
-    "dev": "ts-node-dev ./src/index.ts"
+    "dev": "ts-node-dev ./src/index.ts",
+    "seed": "ts-node-dev ./src/db/seed.ts",
+    "full": "npm run fetch && npm run create && npm run seed && npm run dev"
   },
   "author": "",
   "license": "ISC",
