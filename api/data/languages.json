@@ -1,35 +1,35 @@
 [
   {
     "id": 1,
-    "label": "JavaScript"
-  },
-  {
-    "id": 2,
-    "label": "Astro"
-  },
-  {
-    "id": 3,
     "label": "CSS"
   },
   {
-    "id": 4,
+    "id": 2,
     "label": "TypeScript"
   },
   {
+    "id": 3,
+    "label": "JavaScript"
+  },
+  {
+    "id": 4,
+    "label": "Dockerfile"
+  },
+  {
     "id": 5,
-    "label": "GDScript"
+    "label": "Astro"
   },
   {
     "id": 6,
-    "label": "Shell"
+    "label": "GDScript"
   },
   {
     "id": 7,
-    "label": "HTML"
+    "label": "Shell"
   },
   {
     "id": 8,
-    "label": "Dockerfile"
+    "label": "HTML"
   },
   {
     "id": 9,

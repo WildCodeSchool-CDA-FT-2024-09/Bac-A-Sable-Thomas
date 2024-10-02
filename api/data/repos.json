@@ -1,5 +1,11 @@
 [
   {
+    "id": "R_kgDOKj_YXA",
+    "name": "teallen-front",
+    "url": "https://github.com/teasmade/teallen-front",
+    "isPrivate": 2
+  },
+  {
     "id": "R_kgDOMJ1wPQ",
     "name": "astro-p5js",
     "url": "https://github.com/teasmade/astro-p5js",
@@ -40,12 +46,6 @@
     "name": "react-check",
     "url": "https://github.com/teasmade/react-check",
     "isPrivate": 1
-  },
-  {
-    "id": "R_kgDOKj_YXA",
-    "name": "teallen-front",
-    "url": "https://github.com/teasmade/teallen-front",
-    "isPrivate": 2
   },
   {
     "id": "R_kgDOLq5I6w",
