@@ -7,6 +7,8 @@ import {
   updateRepo,
 } from "./repos.controller";
 
+import { errorHandler } from "../middleware/errorHandler";
+
 const repoRouter = express.Router();
 
 repoRouter.get("/", getRepos);
@@ -16,4 +18,6 @@ repoRouter.post("/", addRepo);
 repoRouter.put("/:id", updateRepo);
 
 repoRouter.delete("/:id", deleteRepo);
+
+repoRouter.use(errorHandler);
 export default repoRouter;

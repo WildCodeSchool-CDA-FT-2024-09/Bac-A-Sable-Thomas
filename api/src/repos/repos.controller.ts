@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { Repo } from "./repos.entity";
 import { validate } from "class-validator";
-import { In, QueryFailedError } from "typeorm";
+import { In } from "typeorm";
 import { Status } from "../statuses/statuses.entity";
 import { Language } from "../languages/languages.entity";
 
@@ -41,7 +41,11 @@ export const getRepo = async (req: Request, res: Response) => {
   }
 };
 
-export const addRepo = async (req: Request, res: Response) => {
+export const addRepo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const newRepo = req.body;
   try {
     // Modify for explicit values assignement
@@ -71,17 +75,7 @@ export const addRepo = async (req: Request, res: Response) => {
     const savedRepo = await repo.save();
     res.status(201).json(savedRepo);
   } catch (err) {
-    if (err instanceof QueryFailedError) {
-      // Db constraint errors will show here
-      res
-        .status(400)
-        .json({ message: "Database query failed", details: err.message });
-    } else {
-      // Generic error handler
-      res
-        .status(500)
-        .json({ message: "Internal server error", details: err.message });
-    }
+    next(err);
   }
 };
 
