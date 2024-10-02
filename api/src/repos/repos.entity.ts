@@ -32,5 +32,5 @@ export class Repo extends BaseEntity {
 
   @ManyToMany(() => Language, (language) => language.repos)
   @JoinTable()
-  languages: Language[];
+  languages?: Language[];
 }
