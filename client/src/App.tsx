@@ -4,7 +4,7 @@ function App() {
   return (
     <>
       <div>
-        <p>My Lovely Sandbox</p>
+        <p className="text-3xl text-rose-600">My Lovely Sandbox</p>
       </div>
     </>
   );
