@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { Repo } from "./repos.entity";
 import { validate } from "class-validator";
-import { QueryFailedError } from "typeorm";
+import { In, QueryFailedError } from "typeorm";
+import { Status } from "../statuses/statuses.entity";
+import { Language } from "../languages/languages.entity";
 
 export const getRepos = async (req: Request, res: Response) => {
   // Query params
@@ -40,18 +42,32 @@ export const getRepo = async (req: Request, res: Response) => {
 };
 
 export const addRepo = async (req: Request, res: Response) => {
-  const newRepo: Repo = req.body;
+  const newRepo = req.body;
   try {
-    const repo = Repo.create(newRepo);
+    // Modify for explicit values assignement
+    const repo = new Repo();
+    repo.id = newRepo.id;
+    repo.name = newRepo.name;
+    repo.url = newRepo.url;
+
+    const newStatus = await Status.findOneOrFail({
+      where: { id: newRepo.isPrivate },
+    });
+    repo.status = newStatus;
+
+    const newLanguages = await Language.find({
+      where: { id: In(newRepo.languages) },
+    });
+
+    repo.languages = newLanguages;
+
     // Validate entity before saving
     const errors = await validate(repo);
     if (errors.length > 0) {
       res.status(400).json({ message: "Validation errors", errors });
       return;
     }
-    // Attempt to save entity - have to use explicit insert as .save() in TypeORM does an upsert.
-    // This is somewhat particular to the demo case with a non-autoincrementing primary key.
-    // await Repo.insert(repo);
+
     const savedRepo = await repo.save();
     res.status(201).json(savedRepo);
   } catch (err) {
