@@ -24,7 +24,3 @@ h5,
 h6 {
   @apply font-semibold text-slate-900;
 }
-
-a {
-  @apply text-indigo-500 underline hover:text-indigo-700;
-}

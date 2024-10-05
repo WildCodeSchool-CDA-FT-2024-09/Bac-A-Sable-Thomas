@@ -28,6 +28,12 @@ const router = createBrowserRouter([
       {
         path: "/details/:id",
         element: <RepoDetailsPage />,
+        loader: async ({ params }) => {
+          const { data } = await connection.get<RepoRequest>(
+            `/api/repos/${params.id}`,
+          );
+          return data;
+        },
       },
     ],
   },
