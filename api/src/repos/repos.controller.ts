@@ -33,7 +33,10 @@ export const getRepos = async (req: Request, res: Response) => {
 };
 
 export const getRepo = async (req: Request, res: Response) => {
-  const repo = await Repo.findOne({ where: { id: req.params.id } });
+  const repo = await Repo.findOne({
+    where: { id: req.params.id },
+    relations: { status: true, languages: true },
+  });
   if (repo) {
     res.status(200).json(repo);
   } else {
