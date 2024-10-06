@@ -8,7 +8,7 @@ import "./index.css";
 import RepoDetailsPage from "./pages/RepoDetailsPage.tsx";
 import ReposPage from "./pages/ReposPage.tsx";
 import connection from "./services/connection.ts";
-import { RepoRequest } from "./types/RepoTypes.ts";
+import { ReposRequest, Languages } from "./types/RepoTypes.ts";
 
 // TODO - custom 404 page
 
@@ -21,15 +21,31 @@ const router = createBrowserRouter([
         path: "/",
         element: <ReposPage />,
         loader: async () => {
-          const { data } = await connection.get<RepoRequest>("/api/repos");
-          return data;
+          const [reposRes, languagesRes] = await Promise.all([
+            connection.get<ReposRequest>("/api/repos"),
+            connection.get<Languages>("/api/languages"),
+          ]);
+          return { repos: reposRes.data, languages: languagesRes.data };
+        },
+      },
+      {
+        path: "/repos/:language",
+        element: <ReposPage />,
+        loader: async ({ params }) => {
+          const [reposRes, languagesRes] = await Promise.all([
+            connection.get<ReposRequest>(
+              `/api/repos/languages/${params.language}`,
+            ),
+            connection.get<Languages>("/api/languages"),
+          ]);
+          return { repos: reposRes.data, languages: languagesRes.data };
         },
       },
       {
         path: "/details/:id",
         element: <RepoDetailsPage />,
         loader: async ({ params }) => {
-          const { data } = await connection.get<RepoRequest>(
+          const { data } = await connection.get<ReposRequest>(
             `/api/repos/${params.id}`,
           );
           return data;

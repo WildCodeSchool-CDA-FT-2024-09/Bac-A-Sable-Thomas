@@ -16,4 +16,11 @@ export type Language = {
   label: string;
 };
 
-export type RepoRequest = Repo[] | [];
+export type Languages = Language[];
+
+export type ReposRequest = Repo[] | [];
+
+export type ReposPageLoaderData = {
+  repos: ReposRequest;
+  languages: Languages;
+};

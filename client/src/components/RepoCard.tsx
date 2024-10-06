@@ -23,14 +23,6 @@ const RepoCard = ({ repo }: { repo: Repo }) => {
             </li>
           )}
         </ul>
-        <a
-          href={repo.url}
-          target="_blank"
-          rel="noreferrer"
-          className="hover:text-indigo-700; w-full truncate text-nowrap text-base text-indigo-500 underline"
-        >
-          {repo.url}
-        </a>
       </li>
     </Link>
   );
