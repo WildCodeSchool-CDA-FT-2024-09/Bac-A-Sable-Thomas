@@ -6,15 +6,19 @@ import { Link } from "react-router-dom";
 function ReposPage() {
   const { repos, languages } = useLoaderData() as ReposPageLoaderData;
   return (
-    <main className="flex flex-grow flex-col justify-start gap-6">
+    <main className="flex flex-grow flex-col items-center justify-start gap-6">
       <h1 className="mb-2 text-center">My Lovely Repos Page</h1>
-      {/* <p className="mb-4 text-center">
-        {search.language ? `Language: ${search.language}` : "All languages"}
-      </p> */}
-      <div className="flex flex-row flex-wrap justify-center gap-2">
+
+      <div className="flex w-3/4 flex-row flex-wrap justify-center gap-2 xl:w-full">
+        <Link
+          to="/"
+          className="rounded border border-gray-500 bg-slate-300 px-3 py-1 font-semibold transition-all hover:scale-105 hover:shadow-sm hover:shadow-slate-600"
+        >
+          All Languages
+        </Link>
         {languages.length
           ? languages.map((lang) => (
-              <div className="rounded border border-gray-500 bg-slate-300 px-3 py-1 transition-all hover:scale-105 hover:shadow-sm hover:shadow-slate-600">
+              <div className="rounded border border-gray-500 bg-slate-300 px-3 py-1 italic transition-all hover:scale-105 hover:shadow-sm hover:shadow-slate-600">
                 <Link to={`/repos/${lang.label}`} key={lang.id}>
                   {lang.label}
                 </Link>
