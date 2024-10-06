@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         loader: async ({ params }) => {
           const [reposRes, languagesRes] = await Promise.all([
             connection.get<ReposRequest>(
-              `/api/repos/languages/${params.language}`,
+              `/api/repos/language/${params.language}`,
             ),
             connection.get<Languages>("/api/languages"),
           ]);

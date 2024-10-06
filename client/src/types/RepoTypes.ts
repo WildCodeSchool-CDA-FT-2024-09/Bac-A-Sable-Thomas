@@ -4,6 +4,7 @@ export type Repo = {
   url: string;
   status: Status;
   languages: Language[] | [];
+  comments: Comment[] | [];
 };
 
 export type Status = {
@@ -14,6 +15,13 @@ export type Status = {
 export type Language = {
   id: number;
   label: string;
+};
+
+export type Comment = {
+  id: number;
+  author: string;
+  text: string;
+  createdAt: string;
 };
 
 export type Languages = Language[];
