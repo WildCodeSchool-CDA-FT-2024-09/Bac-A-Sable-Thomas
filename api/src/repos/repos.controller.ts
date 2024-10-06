@@ -35,17 +35,17 @@ export const getReposByLanguage = async (req: Request, res: Response) => {
   const language = req.params.language;
 
   try {
-    // WHY DOESN'T THIS WORK?
-    // const repos = await Repo.find({
-    //   relations: { status: true, languages: true },
-    //   where: { languages: { label: language } },
-    // });
+    // WHY DOESN'T THIS WORK ON ITS OWN?
+    const repos = await Repo.find({
+      relations: { status: true, languages: true },
+      where: { languages: { label: language } },
+    });
     // Neither does this with query builder
-    const repos = await Repo.createQueryBuilder("repo")
-      // .leftJoinAndSelect("repo.status", "status")
-      .leftJoinAndSelect("repo.languages", "languages")
-      .where("languages.label = :language", { language })
-      .getMany();
+    // const repos = await Repo.createQueryBuilder("repo")
+    //   // .leftJoinAndSelect("repo.status", "status")
+    //   .leftJoinAndSelect("repo.languages", "languages")
+    //   .where("languages.label = :language", { language })
+    //   .getMany();
 
     // Fetch all languages for the filtered repos to ensure they are fully loaded - seems hmm???
     const fullRepos = await Repo.find({
@@ -61,7 +61,7 @@ export const getReposByLanguage = async (req: Request, res: Response) => {
 export const getRepo = async (req: Request, res: Response) => {
   const repo = await Repo.findOne({
     where: { id: req.params.id },
-    relations: { status: true, languages: true },
+    relations: { status: true, languages: true, comments: true },
   });
   if (repo) {
     res.status(200).json(repo);

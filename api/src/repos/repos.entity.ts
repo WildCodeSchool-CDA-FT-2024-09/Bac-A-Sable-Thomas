@@ -6,10 +6,12 @@ import {
   Unique,
   ManyToOne,
   ManyToMany,
+  OneToMany,
   JoinTable,
 } from "typeorm";
 import { Status } from "../statuses/statuses.entity";
 import { Language } from "../languages/languages.entity";
+import { Comment } from "../comments/comments.entity";
 import { IsString } from "class-validator";
 
 @Entity()
@@ -29,6 +31,9 @@ export class Repo extends BaseEntity {
 
   @ManyToOne(() => Status, (status) => status.repos)
   status: Status;
+
+  @OneToMany(() => Comment, (comment) => comment.repo)
+  comments?: Comment[];
 
   @ManyToMany(() => Language, (language) => language.repos)
   @JoinTable()

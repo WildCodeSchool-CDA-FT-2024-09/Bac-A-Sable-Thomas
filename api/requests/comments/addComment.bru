@@ -1,0 +1,19 @@
+meta {
+  name: addComment
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/comments
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "repoId": "R_kgDOKic42Q",
+    "author": "Repo McRepoface",
+    "text": "OH my, I love your repo"
+  }
+}

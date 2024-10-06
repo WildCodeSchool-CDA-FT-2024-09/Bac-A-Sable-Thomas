@@ -14,7 +14,7 @@ const repoRouter = express.Router();
 
 repoRouter.get("/", getRepos);
 repoRouter.get("/:id", getRepo);
-repoRouter.get("/languages/:language", getReposByLanguage);
+repoRouter.get("/language/:language", getReposByLanguage);
 
 repoRouter.post("/", addRepo);
 repoRouter.put("/:id", updateRepo);
