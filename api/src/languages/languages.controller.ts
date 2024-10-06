@@ -3,11 +3,7 @@ import { Language } from "./languages.entity";
 
 export const getLanguages = async (_req: Request, res: Response) => {
   try {
-    const languages = await Language.find({
-      relations: {
-        repos: true,
-      },
-    });
+    const languages = await Language.find();
     res.status(200).json(languages);
   } catch (err) {
     res.status(500).json({ message: err.message });

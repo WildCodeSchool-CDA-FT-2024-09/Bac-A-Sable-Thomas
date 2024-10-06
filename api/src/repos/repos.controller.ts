@@ -7,7 +7,7 @@ import { Language } from "../languages/languages.entity";
 
 export const getRepos = async (req: Request, res: Response) => {
   // Query params
-  if (req.query !== undefined) {
+  if (req.query) {
     if (req.query.order) {
       const orderBy = req.query.order as string;
       try {
@@ -20,13 +20,39 @@ export const getRepos = async (req: Request, res: Response) => {
         res.status(500).json({ message: err.message });
       }
     }
+    try {
+      const repos = await Repo.find({
+        relations: { status: true, languages: true },
+      });
+      res.status(200).json(repos);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
   }
+};
+
+export const getReposByLanguage = async (req: Request, res: Response) => {
+  const language = req.params.language;
 
   try {
-    const repos = await Repo.find({
+    // WHY DOESN'T THIS WORK?
+    // const repos = await Repo.find({
+    //   relations: { status: true, languages: true },
+    //   where: { languages: { label: language } },
+    // });
+    // Neither does this with query builder
+    const repos = await Repo.createQueryBuilder("repo")
+      // .leftJoinAndSelect("repo.status", "status")
+      .leftJoinAndSelect("repo.languages", "languages")
+      .where("languages.label = :language", { language })
+      .getMany();
+
+    // Fetch all languages for the filtered repos to ensure they are fully loaded - seems hmm???
+    const fullRepos = await Repo.find({
+      where: { id: In(repos.map((repo) => repo.id)) },
       relations: { status: true, languages: true },
     });
-    res.status(200).json(repos);
+    res.status(200).json(fullRepos);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
