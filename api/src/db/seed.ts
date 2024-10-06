@@ -56,21 +56,29 @@ import repo_languages from "../../data/repo_languages.json";
         ) as Status;
         newRepo.status = newStatus;
 
-        // Find repo languages
-        const newLanguages = savedLanguages.filter((savedLanguage) => {
-          const newRepoLanguageAssociations = repo_languages.filter(
-            (repo_language) => {
-              return repo_language.repoId === newRepo.id;
-            }
-          );
-          const newRepoLanguages = newRepoLanguageAssociations.map((assoc) => {
-            return savedLanguages.find(
-              (language) => language.id === assoc.languageId
-            );
-          });
-          return newRepoLanguages.includes(savedLanguage);
-        });
-        newRepo.languages = newLanguages;
+        // Get the subset of repo_languages that are associated with this repo
+        const newRepoLanguageAssociations = repo_languages.filter(
+          (repo_language) => {
+            return repo_language.repoId === newRepo.id;
+          }
+        );
+
+        // For that subset...
+        const newRepoLanguages = newRepoLanguageAssociations.map((assoc) => {
+          // ... get the label of the language from the original data that matches the languageId of the association
+          const label = languageData.find(
+            (language) => language.id === assoc.languageId
+          )?.label;
+          // ... find the newly saved language that matches that label and return its id
+          return {
+            id: savedLanguages.find(
+              (savedLanguage) => savedLanguage.label === label
+            )?.id,
+            label: label,
+          };
+        }) as Language[];
+
+        newRepo.languages = newRepoLanguages;
         return await newRepo.save();
       })
     );
