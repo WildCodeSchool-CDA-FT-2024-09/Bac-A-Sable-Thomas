@@ -5,7 +5,6 @@ import {
   addRepo,
   deleteRepo,
   updateRepo,
-  getReposByLanguage,
 } from "./repos.controller";
 
 import { errorHandler } from "../middleware/errorHandler";
@@ -14,7 +13,6 @@ const repoRouter = express.Router();
 
 repoRouter.get("/", getRepos);
 repoRouter.get("/:id", getRepo);
-repoRouter.get("/language/:language", getReposByLanguage);
 
 repoRouter.post("/", addRepo);
 repoRouter.put("/:id", updateRepo);

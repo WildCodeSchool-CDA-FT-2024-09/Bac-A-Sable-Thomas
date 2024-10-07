@@ -20,22 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ReposPage />,
-        loader: async () => {
+        loader: async ({ request }) => {
+          const url = new URL(request.url);
           const [reposRes, languagesRes] = await Promise.all([
-            connection.get<ReposRequest>("/api/repos"),
-            connection.get<Languages>("/api/languages"),
-          ]);
-          return { repos: reposRes.data, languages: languagesRes.data };
-        },
-      },
-      {
-        path: "/repos/:language",
-        element: <ReposPage />,
-        loader: async ({ params }) => {
-          const [reposRes, languagesRes] = await Promise.all([
-            connection.get<ReposRequest>(
-              `/api/repos/language/${params.language}`,
-            ),
+            connection.get<ReposRequest>(`/api/repos${url.search}`),
             connection.get<Languages>("/api/languages"),
           ]);
           return { repos: reposRes.data, languages: languagesRes.data };

@@ -22,7 +22,7 @@ function ReposPage() {
                 className="rounded border border-gray-500 bg-slate-300 px-3 py-1 italic transition-all hover:scale-105 hover:shadow-sm hover:shadow-slate-600"
                 key={lang.id}
               >
-                <Link to={`/repos/${lang.label}`}>{lang.label}</Link>
+                <Link to={`?language=${lang.label}`}>{lang.label}</Link>
               </div>
             ))
           : null}

@@ -8,6 +8,9 @@ import { Language } from "../languages/languages.entity";
 export const getRepos = async (req: Request, res: Response) => {
   // Query params
   if (req.query) {
+    if (req.query.language) {
+      return getReposByLanguage(req, res);
+    }
     if (req.query.order) {
       const orderBy = req.query.order as string;
       try {
@@ -31,8 +34,8 @@ export const getRepos = async (req: Request, res: Response) => {
   }
 };
 
-export const getReposByLanguage = async (req: Request, res: Response) => {
-  const language = req.params.language;
+const getReposByLanguage = async (req: Request, res: Response) => {
+  const language = req.query.language as string;
 
   try {
     // WHY DOESN'T THIS WORK ON ITS OWN?
