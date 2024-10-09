@@ -2,13 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import App from "./App.tsx";
-
 import "./index.css";
-import RepoDetailsPage from "./pages/RepoDetailsPage.tsx";
+import App from "./App.tsx";
 import ReposPage from "./pages/ReposPage.tsx";
-import connection from "./services/connection.ts";
-import { ReposRequest, Languages } from "./types/RepoTypes.ts";
+import RepoDetailsPage from "./pages/RepoDetailsPage.tsx";
+
+import { ApolloProvider } from "@apollo/client";
+import client from "./services/connection.ts";
 
 // TODO - custom 404 page
 
@@ -20,24 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ReposPage />,
-        loader: async ({ request }) => {
-          const url = new URL(request.url);
-          const [reposRes, languagesRes] = await Promise.all([
-            connection.get<ReposRequest>(`/api/repos${url.search}`),
-            connection.get<Languages>("/api/languages"),
-          ]);
-          return { repos: reposRes.data, languages: languagesRes.data };
-        },
       },
       {
-        path: "/details/:id",
+        path: "/details/:repoId",
         element: <RepoDetailsPage />,
-        loader: async ({ params }) => {
-          const { data } = await connection.get<ReposRequest>(
-            `/api/repos/${params.id}`,
-          );
-          return data;
-        },
       },
     ],
   },
@@ -45,6 +31,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ApolloProvider client={client}>
+      <RouterProvider router={router} />
+    </ApolloProvider>
   </StrictMode>,
 );
