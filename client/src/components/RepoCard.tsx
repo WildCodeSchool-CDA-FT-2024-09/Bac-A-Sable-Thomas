@@ -1,4 +1,4 @@
-import { Repo } from "../types/RepoTypes";
+import { Repo } from "../generated/graphql-types";
 import { Link } from "react-router-dom";
 
 const RepoCard = ({ repo }: { repo: Repo }) => {
@@ -11,17 +11,22 @@ const RepoCard = ({ repo }: { repo: Repo }) => {
         <h2 className="text-xl font-bold">{repo.name}</h2>
         <p className="text-gray-600">Status: {repo.status.label}</p>
         <ul className="flex gap-2">
-          {repo.languages.length ? (
-            repo.languages.map((lang) => (
-              <li key={lang.id} className="font-semibold italic text-slate-600">
-                {lang.label}
+          {repo.languages ? (
+            repo.languages.length ? (
+              repo.languages.map((lang) => (
+                <li
+                  key={lang.id}
+                  className="font-semibold italic text-slate-600"
+                >
+                  {lang.label}
+                </li>
+              ))
+            ) : (
+              <li className="font-serif font-bold italic text-purple-500">
+                This 👻 repo is written without languages
               </li>
-            ))
-          ) : (
-            <li className="font-serif font-bold italic text-purple-500">
-              This 👻 repo is written without languages
-            </li>
-          )}
+            )
+          ) : null}
         </ul>
       </li>
     </Link>
