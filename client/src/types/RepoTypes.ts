@@ -28,7 +28,7 @@ export type Languages = Language[];
 
 export type ReposRequest = Repo[] | [];
 
-export type ReposPageLoaderData = {
+export type ReposPageData = {
   repos: ReposRequest;
   languages: Languages;
 };

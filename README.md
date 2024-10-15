@@ -11,3 +11,5 @@ A front end client using React, React-Router-Dom, Tailwind to display repos data
 Server-side filtering of repos by language.
 
 Per-repo commenting.
+
+GraphQL - Apollo server and client

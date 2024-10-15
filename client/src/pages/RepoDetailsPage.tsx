@@ -1,15 +1,64 @@
-import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Repo } from "../types/RepoTypes";
-import connection from "../services/connection";
+import { useQuery, useMutation, gql } from "@apollo/client";
 
 import RepoDetailCard from "../components/RepoDetailCard";
 import RepoComments from "../components/RepoComments";
 import RepoCommentsForm from "../components/RepoCommentsForm";
 
+const GET_REPO = gql`
+  query Repo($repoId: String!) {
+    repo(id: $repoId) {
+      id
+      name
+      url
+      status {
+        id
+        label
+      }
+      languages {
+        id
+        label
+      }
+      comments {
+        author
+        createdAt
+        id
+        text
+      }
+    }
+  }
+`;
+
+const CREATE_NEW_COMMENT = gql`
+  mutation CreateNewComment($data: NewComment!) {
+    createNewComment(data: $data) {
+      id
+      author
+      createdAt
+      text
+      repo {
+        id
+      }
+    }
+  }
+`;
+
 function RepoDetailsPage() {
-  const repo = useLoaderData() as Repo;
-  const [comments, setComments] = useState(repo.comments);
+  const { repoId } = useParams<{ repoId: string }>();
+
+  const {
+    loading: repoLoading,
+    error: repoError,
+    data: repoData,
+  } = useQuery<{
+    repo: Repo | undefined;
+  }>(GET_REPO, {
+    variables: { repoId: repoId },
+    errorPolicy: "all",
+  });
+
+  const [createComment] = useMutation(CREATE_NEW_COMMENT);
 
   async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>,
@@ -18,21 +67,35 @@ function RepoDetailsPage() {
     const formData = new FormData(event.currentTarget);
     const name = formData.get("name") as string;
     const comment = formData.get("comment") as string;
-    const response = await connection.post("/api/comments", {
-      author: name,
-      text: comment,
-      repoId: repo.id,
+    await createComment({
+      variables: {
+        data: {
+          author: name,
+          repoId: repoId,
+          text: comment,
+        },
+      },
+      refetchQueries: [{ query: GET_REPO, variables: { repoId: repoId } }],
     });
-    if (response.status === 201) {
-      setComments([...comments, response.data]);
-    }
   }
+
+  if (repoLoading) return <p>Loading repo...</p>;
+  if (repoError)
+    return (
+      <p>
+        Error loading repo: <pre>{JSON.stringify(repoError, null, 2)}</pre>
+      </p>
+    );
+  if (!repoData) return <p>No data</p>;
+
+  // Casting as we've just covered the no repoData case
+  const { repo } = repoData as { repo: Repo };
 
   return (
     <main className="flex flex-grow flex-col items-center justify-start gap-6">
       <h2>A Repo, in all its glory</h2>
       <RepoDetailCard repo={repo} />
-      <RepoComments comments={comments} />
+      <RepoComments comments={repo?.comments || []} />
       <RepoCommentsForm onSubmit={handleSubmit} />
     </main>
   );
