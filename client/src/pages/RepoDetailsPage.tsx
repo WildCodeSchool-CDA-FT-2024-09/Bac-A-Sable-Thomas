@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import { Repo } from "../types/RepoTypes";
-// import { useQuery, useMutation, gql } from "@apollo/client";
 import {
   useRepoQuery,
   useCreateNewCommentMutation,
@@ -12,14 +11,14 @@ import RepoComments from "../components/RepoComments";
 import RepoCommentsForm from "../components/RepoCommentsForm";
 
 function RepoDetailsPage() {
-  const { repoId } = useParams<{ repoId: string }>() as { repoId: string };
+  const { repoId } = useParams<{ repoId: string }>();
 
   const {
     loading: repoLoading,
     error: repoError,
     data: repoData,
   } = useRepoQuery({
-    variables: { repoId: repoId },
+    variables: { repoId: repoId ?? "" },
     errorPolicy: "all",
   });
 
@@ -36,7 +35,7 @@ function RepoDetailsPage() {
       variables: {
         data: {
           author: name,
-          repoId: repoId,
+          repoId: repoId ?? "",
           text: comment,
         },
       },
