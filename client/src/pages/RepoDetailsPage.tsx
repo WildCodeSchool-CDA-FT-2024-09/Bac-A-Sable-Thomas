@@ -1,48 +1,14 @@
 import { useParams } from "react-router-dom";
 import { Repo } from "../types/RepoTypes";
-import { useQuery, useMutation, gql } from "@apollo/client";
+import {
+  useRepoQuery,
+  useCreateNewCommentMutation,
+  RepoDocument,
+} from "../generated/graphql-types";
 
 import RepoDetailCard from "../components/RepoDetailCard";
 import RepoComments from "../components/RepoComments";
 import RepoCommentsForm from "../components/RepoCommentsForm";
-
-const GET_REPO = gql`
-  query Repo($repoId: String!) {
-    repo(id: $repoId) {
-      id
-      name
-      url
-      status {
-        id
-        label
-      }
-      languages {
-        id
-        label
-      }
-      comments {
-        author
-        createdAt
-        id
-        text
-      }
-    }
-  }
-`;
-
-const CREATE_NEW_COMMENT = gql`
-  mutation CreateNewComment($data: NewComment!) {
-    createNewComment(data: $data) {
-      id
-      author
-      createdAt
-      text
-      repo {
-        id
-      }
-    }
-  }
-`;
 
 function RepoDetailsPage() {
   const { repoId } = useParams<{ repoId: string }>();
@@ -51,14 +17,12 @@ function RepoDetailsPage() {
     loading: repoLoading,
     error: repoError,
     data: repoData,
-  } = useQuery<{
-    repo: Repo | undefined;
-  }>(GET_REPO, {
-    variables: { repoId: repoId },
+  } = useRepoQuery({
+    variables: { repoId: repoId ?? "" },
     errorPolicy: "all",
   });
 
-  const [createComment] = useMutation(CREATE_NEW_COMMENT);
+  const [createComment] = useCreateNewCommentMutation();
 
   async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>,
@@ -71,11 +35,11 @@ function RepoDetailsPage() {
       variables: {
         data: {
           author: name,
-          repoId: repoId,
+          repoId: repoId ?? "",
           text: comment,
         },
       },
-      refetchQueries: [{ query: GET_REPO, variables: { repoId: repoId } }],
+      refetchQueries: [{ query: RepoDocument, variables: { repoId: repoId } }],
     });
   }
 

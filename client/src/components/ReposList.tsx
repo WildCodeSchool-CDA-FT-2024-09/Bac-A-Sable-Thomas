@@ -1,7 +1,7 @@
-import { Repo } from "../types/RepoTypes";
+import { Repo } from "../generated/graphql-types";
 import RepoCard from "./RepoCard";
 
-const ReposList = ({ repos }: { repos: Repo[] | [] }) => {
+const ReposList = ({ repos }: { repos: Repo[] }) => {
   return (
     <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 xl:grid-cols-3">
       {repos.length ? (

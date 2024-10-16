@@ -1,40 +1,13 @@
 import ReposList from "../components/ReposList";
-// import { useEffect } from "react";
-import { ReposPageData } from "../types/RepoTypes";
 import { Link, useLocation } from "react-router-dom";
-import { useQuery, gql } from "@apollo/client";
-
-const GET_REPOS = gql`
-  query Repos($language: String) {
-    repos(language: $language) {
-      id
-      name
-      url
-      status {
-        id
-        label
-      }
-      languages {
-        id
-        label
-      }
-    }
-    languages {
-      id
-      label
-    }
-  }
-`;
+import { useReposQuery } from "../generated/graphql-types";
 
 function ReposPage() {
-  // These native methods won't work - outside the lifecycle of react
-  // const url = new URL(window.location.href);
-  // const language = url?.searchParams.get("language");
   const { search } = useLocation();
   const language = new URLSearchParams(search).get("language");
   const variables = language ? { language } : {};
 
-  const { loading, error, data } = useQuery<ReposPageData>(GET_REPOS, {
+  const { loading, error, data } = useReposQuery({
     variables: variables,
     errorPolicy: "all",
   });
