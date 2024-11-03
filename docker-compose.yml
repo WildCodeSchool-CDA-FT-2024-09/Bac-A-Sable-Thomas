@@ -1,0 +1,42 @@
+services:
+  basdb:
+    image: postgres
+    ports:
+      - 5566:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    container_name: adminer
+    depends_on:
+      basdb:
+        condition: service_healthy
+
+  baspi:
+    build: ./api
+    ports:
+      - 4000:4000
+    command: ["npm", "run", "full"]
+    depends_on:
+      basdb:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+
+  client:
+    build: ./client
+    ports:
+      - 5173:5173
+    environment:
+      - VITE_GRAPHQL_API_URL=http://localhost:4000
+    command: ["npm", "run", "dev"]
+    volumes:
+      - ./client:/app
