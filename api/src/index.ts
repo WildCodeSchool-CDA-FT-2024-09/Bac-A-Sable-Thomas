@@ -1,13 +1,13 @@
 // // Entrypoint - configures the express server and starts it
-// import * as dotenv from "dotenv";
+import * as dotenv from "dotenv";
 // import express from "express";
 // import cors from "cors";
 // import router from "./router";
 // import "reflect-metadata";
 // import dataSource from "./db/data-source";
 
-// dotenv.config();
-// const { PORT, FRONTEND_URL } = process.env;
+dotenv.config();
+const { PORT } = process.env;
 
 // const app = express();
 
@@ -52,7 +52,7 @@ import CommentResolver from "./comments/comment.resolver";
     schema,
   });
   const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    listen: { port: Number(PORT) },
   });
   console.log(`🚀  Server ready at: ${url}`);
 })();
