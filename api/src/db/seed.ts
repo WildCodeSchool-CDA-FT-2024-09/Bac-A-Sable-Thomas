@@ -10,38 +10,74 @@ import repo_languages from "../../data/repo_languages.json";
 
 (async () => {
   await dataSource.initialize();
-  const queryRunner = dataSource.createQueryRunner();
   console.log("Data source initialized");
 
+  let queryRunner = dataSource.createQueryRunner();
   try {
     await queryRunner.startTransaction();
-    await queryRunner.query("DELETE FROM repo");
-    await queryRunner.query("DELETE FROM status");
-    await queryRunner.query("DELETE FROM language");
-    await queryRunner.query("DELETE FROM repo_languages_language");
-
+    await queryRunner.query("TRUNCATE repo RESTART IDENTITY CASCADE");
+    await queryRunner.query("TRUNCATE status RESTART IDENTITY CASCADE");
+    await queryRunner.query("TRUNCATE language RESTART IDENTITY CASCADE");
     await queryRunner.query(
-      "DELETE FROM sqlite_sequence WHERE name = 'status' OR name = 'language'"
+      "TRUNCATE repo_languages_language RESTART IDENTITY CASCADE"
     );
 
-    // Seed languages
-    const savedLanguages = await Promise.all(
+    // Postgres reset sequence if columns not owned by tables
+    // await queryRunner.query(`ALTER SEQUENCE language_id_seq RESTART WITH 1;`);
+    // await queryRunner.query(`ALTER SEQUENCE status_id_seq RESTART WITH 1;`);
+    // await queryRunner.query(`ALTER SEQUENCE comment_id_seq RESTART WITH 1;`);
+
+    await queryRunner.commitTransaction();
+  } catch (error) {
+    console.error("Error truncating tables", error);
+    await queryRunner.rollbackTransaction();
+  } finally {
+    await queryRunner.release();
+  }
+
+  // Seed languages
+  let savedLanguages: Language[] = [];
+  queryRunner = dataSource.createQueryRunner();
+  try {
+    await queryRunner.startTransaction();
+    savedLanguages = await Promise.all(
       languageData.map(async (language) => {
         const newLanguage = new Language();
         newLanguage.label = language.label;
         return await newLanguage.save();
       })
     );
+    await queryRunner.commitTransaction();
+  } catch (error) {
+    console.error("Error inserting languages", error);
+    await queryRunner.rollbackTransaction;
+  } finally {
+    await queryRunner.release();
+  }
 
-    // Seed statuses
-    const savedStatuses = await Promise.all(
+  // Seed statuses
+  let savedStatuses: Status[] = [];
+  queryRunner = dataSource.createQueryRunner();
+  try {
+    await queryRunner.startTransaction();
+    savedStatuses = await Promise.all(
       statusData.map(async (status) => {
         const newStatus = new Status();
         newStatus.label = status.label;
         return await newStatus.save();
       })
     );
+    await queryRunner.commitTransaction();
+  } catch (error) {
+    console.error("Error inserting statuses", error);
+    await queryRunner.rollbackTransaction();
+  } finally {
+    await queryRunner.release();
+  }
 
+  queryRunner = dataSource.createQueryRunner();
+  try {
+    await queryRunner.startTransaction();
     // Seed repos
     const savedRepos = await Promise.all(
       repoData.map(async (repo) => {
@@ -82,14 +118,16 @@ import repo_languages from "../../data/repo_languages.json";
         return await newRepo.save();
       })
     );
+    await queryRunner.commitTransaction();
 
     console.log(
       `Database seeded with ${savedRepos.length} repos, ${savedLanguages.length} languages, and ${savedStatuses.length} statuses`
     );
-
-    await queryRunner.commitTransaction();
   } catch (error) {
     console.error("Error seeding database", error);
     await queryRunner.rollbackTransaction();
+  } finally {
+    await queryRunner.release();
+    await dataSource.destroy();
   }
 })();
