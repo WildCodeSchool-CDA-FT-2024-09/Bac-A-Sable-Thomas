@@ -2,3 +2,5 @@ node_modules
 .vscode
 .env
 db.sqlite
+client/tsconfig.node.tsbuildinfo
+client/tsconfig.app.tsbuildinfo
