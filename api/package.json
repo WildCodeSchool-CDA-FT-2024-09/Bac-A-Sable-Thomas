@@ -11,13 +11,15 @@
     "dev": "ts-node-dev ./src/index.ts",
     "serve": "ts-node ./src/index.ts",
     "seed": "ts-node ./src/db/seed.ts",
-    "full": "npm run seed && npm run serve"
+    "full": "npm run seed && npm run serve",
+    "full-dev": "npm run seed && npm run dev"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.7.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
@@ -25,7 +27,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
-    "@types/jsonwebtoken": "^9.0.7",
+    "argon2": "^0.41.1",
     "class-validator": "^0.14.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
