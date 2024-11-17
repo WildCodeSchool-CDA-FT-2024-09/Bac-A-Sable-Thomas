@@ -19,7 +19,13 @@ services:
         condition: service_healthy
 
   baspi:
-    build: ./api
+    dns:
+      - "8.8.8.8"
+      - "1.1.1.1"
+    # build: ./api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
     environment:
       - DB_TYPE=postgres
       - DB_HOST=basdb
@@ -32,11 +38,17 @@ services:
     depends_on:
       basdb:
         condition: service_healthy
-    volumes:
-      - ./api:/app
+    # volumes:
+    #   - ./api:/app
 
+  # build: ./client
   client:
-    build: ./client
+    dns:
+      - "1.1.1.1"
+      - "8.8.8.8"
+    build:
+      context: ./client
+      dockerfile: Dockerfile
     environment:
       - VITE_GRAPHQL_API_URL=http://localhost:5000/graph
     command: ["npm", "run", "dev"]

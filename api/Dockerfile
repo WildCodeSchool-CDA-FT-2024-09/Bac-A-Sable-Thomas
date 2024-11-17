@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY *.json ./
 
+RUN npm ping
 RUN npm install
 
 COPY src src

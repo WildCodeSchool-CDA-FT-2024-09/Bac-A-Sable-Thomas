@@ -4,6 +4,9 @@ WORKDIR /app
 
 COPY *.json ./
 
+# RUN npm set registry https://registry.yarnpkg.com && npm install --verbose
+
+RUN npm ping
 RUN npm install
 
 COPY . .
