@@ -9,6 +9,7 @@ import RepoDetailsPage from "./pages/RepoDetailsPage.tsx";
 
 import { ApolloProvider } from "@apollo/client";
 import client from "./services/connection.ts";
+import SignupPage from "./pages/SignupPage.tsx";
 
 // TODO - custom 404 page
 
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/details/:repoId",
         element: <RepoDetailsPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
       },
     ],
   },
