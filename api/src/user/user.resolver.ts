@@ -74,7 +74,7 @@ export default class UserResolver {
     user.role = "user";
     await user.save();
 
-    const token = jwt.sign({ username }, AUTH_SECRET, {
+    const token = jwt.sign({ username, role: user.role }, AUTH_SECRET, {
       expiresIn: "24h",
     });
     ctx.res.setHeader(
