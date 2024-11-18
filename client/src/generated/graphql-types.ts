@@ -68,8 +68,8 @@ export type Query = {
 
 
 export type QueryLoginArgs = {
+  email: Scalars['String']['input'];
   password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
 };
 
 
@@ -146,6 +146,14 @@ export type RepoQueryVariables = Exact<{
 
 
 export type RepoQuery = { __typename?: 'Query', repo: { __typename?: 'Repo', id: string, name: string, url: string, status: { __typename?: 'Status', id: number, label: string }, languages?: Array<{ __typename?: 'Language', id: number, label: string }> | null, comments?: Array<{ __typename?: 'Comment', author: string, createdAt: any, id: number, text: string }> | null } };
+
+export type LoginQueryVariables = Exact<{
+  password: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+}>;
+
+
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'User', role: string, username: string, email: string, id: number } };
 
 
 export const CreateNewCommentDocument = gql`
@@ -335,3 +343,47 @@ export type RepoQueryHookResult = ReturnType<typeof useRepoQuery>;
 export type RepoLazyQueryHookResult = ReturnType<typeof useRepoLazyQuery>;
 export type RepoSuspenseQueryHookResult = ReturnType<typeof useRepoSuspenseQuery>;
 export type RepoQueryResult = Apollo.QueryResult<RepoQuery, RepoQueryVariables>;
+export const LoginDocument = gql`
+    query Login($password: String!, $email: String!) {
+  login(password: $password, email: $email) {
+    role
+    username
+    email
+    id
+  }
+}
+    `;
+
+/**
+ * __useLoginQuery__
+ *
+ * To run a query within a React component, call `useLoginQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoginQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoginQuery({
+ *   variables: {
+ *      password: // value for 'password'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useLoginQuery(baseOptions: Apollo.QueryHookOptions<LoginQuery, LoginQueryVariables> & ({ variables: LoginQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+      }
+export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export function useLoginSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LoginQuery, LoginQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LoginQuery, LoginQueryVariables>(LoginDocument, options);
+        }
+export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
+export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
+export type LoginSuspenseQueryHookResult = ReturnType<typeof useLoginSuspenseQuery>;
+export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
