@@ -17,26 +17,29 @@ const { AUTH_SECRET } = process.env;
 
 @Resolver()
 export default class UserResolver {
+  // Query to log in a user
   @Query(() => User)
   async login(
-    @Arg("username") username: string,
+    @Arg("email") email: string,
     @Arg("password") password: string,
     @Ctx() ctx: { res: { setHeader: (key: string, value: string) => void } }
   ): Promise<PublicUser | boolean> {
-    const testPassword = "testargon2hash";
-    const testHash = await argon2.hash(testPassword);
-    const testUser = User.create({
-      username: "test",
-      password: testHash,
-      email: "test@test.com",
-      role: "admin",
-    });
-    if (username === testUser.username) {
-      const valid = await argon2.verify(testUser.password, password);
-      if (valid && AUTH_SECRET) {
-        const token = jwt.sign({ username }, AUTH_SECRET, {
-          expiresIn: "24h",
-        });
+    const user = await User.findOneOrFail({ where: { email } });
+    if (user) {
+      const valid = await argon2.verify(user.password, password);
+
+      if (!AUTH_SECRET) {
+        throw new Error("Server error");
+      }
+
+      if (valid) {
+        const token = jwt.sign(
+          { username: user.username, role: user.role, email: user.email },
+          AUTH_SECRET,
+          {
+            expiresIn: "24h",
+          }
+        );
         ctx.res.setHeader(
           "Set-Cookie",
           "bas-token=" +
@@ -44,13 +47,22 @@ export default class UserResolver {
             "; HttpOnly; Secure; SameSite=Strict; expires=" +
             new Date(Date.now() + 1000 * 60 * 60 * 24 * 2).toUTCString()
         );
-        return testUser;
+        return {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        };
+      } else {
+        throw new Error("Password or email is incorrect");
       }
+    } else {
+      throw new Error("Password or email is incorrect");
     }
-    return false;
   }
 
   @Mutation(() => User)
+  // Mutation to register a user
   async register(
     @Arg("username") username: string,
     @Arg("password") password: string,
@@ -74,9 +86,13 @@ export default class UserResolver {
     user.role = "user";
     await user.save();
 
-    const token = jwt.sign({ username, role: user.role }, AUTH_SECRET, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      { username: user.username, role: user.role, email: user.email },
+      AUTH_SECRET,
+      {
+        expiresIn: "24h",
+      }
+    );
     ctx.res.setHeader(
       "Set-Cookie",
       "bas-token=" +
