@@ -34,12 +34,12 @@ services:
       - DB_PORT=5432
       - DB_USERNAME=postgres
       - PORT=4000
-    command: ["npm", "run", "full"]
+    command: ["npm", "run", "full-dev"]
     depends_on:
       basdb:
         condition: service_healthy
-    # volumes:
-    #   - ./api:/app
+    volumes:
+      - ./api:/app
 
   # build: ./client
   client:

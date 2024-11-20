@@ -13,3 +13,14 @@ export const CREATE_NEW_COMMENT = gql`
     }
   }
 `;
+
+export const REGISTER = gql`
+  mutation Register($email: String!, $password: String!, $username: String!) {
+    register(email: $email, password: $password, username: $username) {
+      id
+      role
+      email
+      username
+    }
+  }
+`;
